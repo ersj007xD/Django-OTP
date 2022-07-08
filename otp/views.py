@@ -9,7 +9,7 @@ from django.conf import settings
 def send_otp_to_mobile(mobile):
     try:
         otp = random.randint(1000,9999)
-        url = f'https://2factor.in/API/V1/{settings.API_KEY}/SMS/{phone_number}/{otp}'
+        url = f'https://2factor.in/API/V1/{settings.API_KEY}/SMS/{mobile}/{otp}'
         response = requests.get(url)
         return otp
     except Exception as error:
@@ -26,13 +26,21 @@ def send_otp(request):
     if data.get('password') is None:
         return Response({"status":False, "message":"password is required"})
 
-    user = User.objects.create(
-        mobile = data.get('mobile'),
+    # user = User.objects.create(
+    #     mobile = data.get('mobile'),
+    #     otp = send_otp_to_mobile(data.get('mobile'))
+    # )
+    # user.set_password = data.get('set_password')
+    # user.save()
+
+    
+    try:
         otp = send_otp_to_mobile(data.get('mobile'))
-    )
-    user.set_password = data.get('set_password')
-    user.save()
-    return Response({"status":True, "message":"OTP sent Successfully !"})
+        result = dict()
+        result["data"] = otp
+        return Response({"status":True, "result": result, "message":"OTP sent Successfully !"})
+    except Exception as error:
+        return Response({"status":False, "result": dict(), "message":"OTP doesn't send Successfully !"})
 
 
 
