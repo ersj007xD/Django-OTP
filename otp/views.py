@@ -26,13 +26,6 @@ def send_otp(request):
     if data.get('password') is None:
         return Response({"status":False, "message":"password is required"})
 
-    # user = User.objects.create(
-    #     mobile = data.get('mobile'),
-    #     otp = send_otp_to_mobile(data.get('mobile'))
-    # )
-    # user.set_password = data.get('set_password')
-    # user.save()
-
     
     try:
         otp = send_otp_to_mobile(data.get('mobile'))
